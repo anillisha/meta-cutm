@@ -68,7 +68,32 @@ do_configure_prepend() {
     EOF
 }
 QT_EDITION = "commercial"
-IMAGE_INSTALL:append=" qt-helloworld qtsmarthome"
+COMPATIBLE_MACHINE = "^rpi$"
 
-ENABLE_UART = "1"
+IMAGE_INSTALL_append = " packagegroup-rpi-test"
+IMAGE_INSTALL += " \
+                    kernel-modules \ 
+                        spitools \
+                        i2c-tools \
+                    "
+
+IMAGE_INSTALL:append=" \
+                        qt-helloworld \
+                        qtsmarthome \
+                        qtgui \
+                            "
+
+# ENABLE_UART = "1"
+# ENABLE_I2C = "1"
+# ENABLE_SPI_BUS = "1"
+KERNEL_MODULE_AUTOLOAD:rpi += "i2c-dev i2c-bcm2708"
+SERIAL_CONSOLE = "115200 ttyAMA0"
 IMAGE_FSTYPES = "tar.xz ext3 rpi-sdimg"
+
+KERNEL_IMAGETYPE ?= "Image"
+MACHINE_FEATURES = " apm usbhost keyboard vfat ext2 screen touchscreen alsa bluetooth wifi sdio"
+# Raspberry Pi has no hardware clock
+MACHINE_FEATURES_BACKFILL_CONSIDERED = "rtc"
+MACHINE_EXTRA_RRECOMMENDS += " kernel-modules"
+# Set Raspberrypi splash image
+SPLASH = "psplash-raspberrypi"
